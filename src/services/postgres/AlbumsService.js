@@ -96,10 +96,10 @@ class AlbumsService {
     }
   }
 
-  async addLikeAlbum(albumId, credetialId) {
+  async addLikeAlbum(albumId, credentialId) {
     const albumLikes = {
       text: 'SELECT * FROM album_likes WHERE album_id = $1 AND user_id = $2',
-      values: [albumId, credetialId],
+      values: [albumId, credentialId],
     };
 
     const like = await this._pool.query(albumLikes);
@@ -112,7 +112,7 @@ class AlbumsService {
 
     const query = {
       text: 'INSERT INTO album_likes VALUES($1, $2, $3) RETURNING id',
-      values: [id, albumId, credetialId],
+      values: [id, albumId, credentialId],
     };
 
     await this._pool.query(query);
@@ -147,7 +147,7 @@ class AlbumsService {
         values: [id],
       };
       const result = await this._pool.query(query);
-      await this._cacheService.set(`album_likes:${id}`, JSON.stringify(result.rowCount));
+      await this._cacheService.set(`album_likes:${id}`, JSON.stringify(result.rowCount), 1800);
 
       return {
         isCache: false,
